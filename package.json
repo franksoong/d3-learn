@@ -8,7 +8,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:franksoong/..."
+    "url": "git@github.com:franksoong/d3-learn.git"
   },
   "license": "MIT",
   "dependencies": {
