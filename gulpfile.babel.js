@@ -48,9 +48,10 @@ gulp.task('dist:clean', cb => {
 });
 
 gulp.task('copy:assets', () => {
-    let cssdir = path.join(outdir, 'css1');
+    let cssdir = path.join(outdir, 'css');
     let fontsdir = path.join(outdir, 'fonts');
     let imagesdir = path.join(outdir, 'images');
+    let datadir = path.join(outdir, 'data');
 
     gulp.src([
             'src/assets/**/*.css'
@@ -72,6 +73,13 @@ gulp.task('copy:assets', () => {
         .pipe($.changed(imagesdir))
         .pipe(gulp.dest(imagesdir))
         .pipe($.size({ title: 'copy images' }))
+
+    gulp.src([
+            'src/data/**'
+        ])
+        .pipe($.changed(datadir))
+        .pipe(gulp.dest(datadir))
+        .pipe($.size({ title: 'copy data files' }))
 });
 
 

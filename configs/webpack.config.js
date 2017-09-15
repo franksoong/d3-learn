@@ -133,7 +133,7 @@ export default ({
         // https://webpack.js.org/configuration/dev-server/#devserver
         devServer: {
             port: port,
-            contentBase: path.join(basePath, 'assets'), //Content not from webpack is served from here
+            contentBase: path.join(basePath, '.'), //Content not from webpack is served from here
             proxy: {},
             //http://webpack.github.io/docs/webpack-dev-server.html#the-historyapifallback-option
             historyApiFallback: {
@@ -149,10 +149,10 @@ export default ({
                     //{ from: /./, to: '/views/404.html' },
                 ],
             },
-            compress: true,
+            //compress: true,
             open: true,
             clientLogLevel: 'info',
-            hot: true,
+            //hot: true,
             headers: {
                 "X-Custom-Foo": "bar"
             },

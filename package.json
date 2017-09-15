@@ -12,9 +12,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "d3": "^4.10.2",
-    "d3-sankey": "^0.7.1",
     "babel-polyfill": "^6.3.14",
+    "d3": "^4.10.2",
     "lodash": "^4.11.2"
   },
   "devDependencies": {
