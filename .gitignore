@@ -15,6 +15,10 @@ release
 # backup file such as .orig
 *.orig
 
+# cache
+cache
+*.cache
+
 # Runtime data
 pids
 *.pid

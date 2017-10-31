@@ -1,6 +1,6 @@
-import map1 from "./cases/map1.js";
+import mycase from "./cases/map2.js";
 
 
-map1();
+mycase();
 
 
