@@ -1,4 +1,4 @@
-import mycase from "./cases/map2.js";
+import mycase from "./cases/brush_and_zoom.js";
 
 
 mycase();
