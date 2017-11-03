@@ -33,14 +33,14 @@ const scssLoader = (env) => {
         { loader: 'style-loader' },
         { loader: 'css-loader', options: cssLoaderOptions },
         { loader: 'postcss-loader', options: postCssLoaderOptions },
-        { loader: 'sass-loader' },
+        { loader: 'sass-loader', options: cssLoaderOptions },
       ],
       production: ExtractTextPlugin.extract({
         fallback: 'style-loader',
         use: [
           { loader: 'css-loader', options: cssLoaderOptions },
           { loader: 'postcss-loader', options: postCssLoaderOptions },
-          { loader: 'sass-loader' },
+          { loader: 'sass-loader', options: cssLoaderOptions },
         ],
       }),
     };
@@ -52,6 +52,7 @@ const scssLoader = (env) => {
 
   return Object.assign({}, {
     test: /(\.css|\.scss|\.sass)$/,
+    exclude: /node_modules/,
     use: config
   });
 };
