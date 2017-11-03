@@ -3,25 +3,15 @@ import webpack from 'webpack';
 import config from './webpack.config';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
-
-//set sever port for dist
-export const PORT = 8080;
-
+// with stripped devtool, devServer and Hot Module Replacement configurations:
 export default config({
-    port: PORT,
+    port: 8080,
     env: 'production',
 
-    //http://webpack.github.io/docs/configuration.html#devtool
-    devtool: 'source-map',
+    // http://webpack.github.io/docs/configuration.html#devtool
+    // devtool: 'source-map',
 
     plugins: [
-
-        //http://webpack.github.io/docs/list-of-plugins.html#defineplugin
-        //The DefinePlugin allows you to create global constants which can be configured at compile time. This can be very useful for allowing different behaviour between development builds and release builds. For example, you might use a global constant to determine whether logging takes place; perhaps you perform logging in your development build but not in the release build. That’s the sort of scenario the DefinePlugin facilitates.
-        new webpack.DefinePlugin({
-            'process.env.NODE_ENV': JSON.stringify('production'),
-        }),
-
         new webpack.LoaderOptionsPlugin({
             minimize: true,
             debug: false,

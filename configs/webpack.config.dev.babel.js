@@ -2,18 +2,15 @@ import config from './webpack.config';
 import webpack from 'webpack';
 import path from 'path';
 
-//set sever port for dev
-export const PORT = 3000;
 
 export default config({
-  port: PORT,
+  port: 3000,
   env: 'development',
 
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify('development'),
-    }),
+  // http://webpack.github.io/docs/configuration.html#devtool
+  devtool:'eval',
 
+  plugins: [
     new webpack.HotModuleReplacementPlugin(),
   ],
 });

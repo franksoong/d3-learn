@@ -5,19 +5,33 @@ import packageJson from '../package.json';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import cssLoader from './cssLoader.config';
+import {basePath, outPath} from './env.js';
 
 
-const basePath = path.join(__dirname, '..', 'src');
+var initialize=function (env, port) {
+    process.env.NODE_ENV = env;
+    process.env.PORT = port;
+    console.log("Building environments: " + env);
+    console.log("Server port: " + port);
+    console.log("Other webpack logs go here ...");
+}
 
 
 export default ({
     plugins = [],
     resolve = {},
 
-    env = process.env.NODE_ENV || 'development',
+    //default value
+    env = 'development',
+
+    // http://webpack.github.io/docs/configuration.html#devtool
+    // eval will be ignord for production mode
     devtool = 'eval',
+
     port = 3000,
 }) => {
+    initialize(env, port);
+
     return {
         context: basePath,
         entry: {
@@ -29,22 +43,26 @@ export default ({
         },
 
         output: {
-            path: path.join(basePath, '..', 'out'), //output path
+            path: outPath, //output path
             publicPath: env === 'development' ? '/' : '', //serve path
             filename: '[name].[hash].js',
         },
         //debugger;
 
-        // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
+        // more info:
+        // https://webpack.github.io/docs/build-performance.html#sourcemaps and
+        // https://webpack.github.io/docs/configuration.html#devtool
         devtool,
 
         plugins: [
-            // Generate HTML file that contains references to generated bundles. See here for how this works: https://github.com/ampedandwired/html-webpack-plugin#basic-usage
+            // Generate HTML file that contains references to generated bundles. See here for how this works:
+            // https://github.com/ampedandwired/html-webpack-plugin#basic-usage
             // https://github.com/kangax/html-minifier#options-quick-reference
+            // https://github.com/jaketrent/html-webpack-template
             new HtmlWebpackPlugin({
-                template: path.join(basePath, 'index.html'),
                 title: 'My Demo App',
                 favicon: path.join(basePath, 'favicon.png'),
+                template: path.join(basePath, 'index.html'),
                 minify: false,
                 inject: true,
             }),
@@ -56,6 +74,14 @@ export default ({
             }),
 
             new webpack.LoaderOptionsPlugin(),
+
+            new webpack.BannerPlugin("Copyright Soong Inc."),
+
+            //http://webpack.github.io/docs/list-of-plugins.html#defineplugin
+            //create global constants which can be configured at compile time, function as a global replacement
+            new webpack.DefinePlugin({
+                VERSION: JSON.stringify('1.0.0'),
+            }),
 
             //http://webpack.github.io/docs/list-of-plugins.html#provideplugin
             //Automatically loaded modules. Module (value) is loaded when the identifier (key) is used as free variable in a module. The identifier is filled with the exports of the loaded module.
@@ -131,6 +157,8 @@ export default ({
 
         // http://webpack.github.io/docs/webpack-dev-server.html
         // https://webpack.js.org/configuration/dev-server/#devserver
+        // devServer option works for webpack-dev-server CLI case,
+        // not works for WebpackDevServer API case
         devServer: {
             port: port,
             contentBase: path.join(basePath, '.'), //Content not from webpack is served from here
@@ -152,7 +180,7 @@ export default ({
             //compress: true,
             open: true,
             clientLogLevel: 'info',
-            //hot: true,
+            hot: true,
             headers: {
                 "X-Custom-Foo": "bar"
             },

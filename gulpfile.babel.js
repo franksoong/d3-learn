@@ -5,29 +5,30 @@ import open from "open";
 import gulpLoadPlugins from "gulp-load-plugins";
 import runSequence from "run-sequence";
 import shell from 'shelljs';
-import webpack from "webpack";
-import webpackProdConfig, {PORT as prodPort} from "./configs/webpack.config.prod.babel";
-import {PORT as devPort} from "./configs/webpack.config.dev.babel";
-import prodBuild from "./configs/prodBuild";
-import prodServer from "./configs/prodServer";
+
 
 const $ = gulpLoadPlugins({ camelize: true });
-const outdir = webpackProdConfig.output.path;
 
+//dist output dir
+const outdir = path.join(__dirname, 'out');
+let prodPort;
 
 // Main tasks
-gulp.task('dev', () => runSequence('webpack:dev'));
-gulp.task('dist', () => runSequence('clean', 'copy:assets', 'copy:manifest', 'webpack:prod', 'dist:serve', 'opendist'));
+gulp.task('dev', () => runSequence('dev:config', 'webpack:dev'));
+gulp.task('dist', () => runSequence('dist:config', 'dist:clean', 'copy:assets', 'copy:manifest', 'webpack:prod', 'dist:serve'));
 gulp.task('clean', ['dist:clean']);
-gulp.task('opendist', () => {
-    const url = 'http://localhost:'+prodPort;
-    open(url);
-});
+
 
 // For dev
+gulp.task('dev:config', () => {
+    process.env.NODE_ENV = 'development';
+    process.env.PORT = 3000;
+});
+
+
 //// Start a livereloading development server
 gulp.task('webpack:dev', (cb) => {
-    // Run external tool synchronously
+    // --progress
     let cmd = "webpack-dev-server --config ./configs/webpack.config.dev.babel.js";
     if (shell.exec(cmd).code !== 0) {
         shell.echo('webpack-dev-server start failed!');
@@ -37,6 +38,12 @@ gulp.task('webpack:dev', (cb) => {
 
 
 // For dist
+gulp.task('dist:config', () => {
+    process.env.NODE_ENV = 'production';
+    process.env.PORT = 8080;
+    prodPort = process.env.PORT;
+});
+
 gulp.task('dist:clean', cb => {
     //or del([outdir], { dot: true }, cb)
 
@@ -94,12 +101,22 @@ gulp.task('copy:manifest', () => {
 
 
 gulp.task('dist:serve', (cb) => {
-    return prodServer(cb);
+    let cmd = "babel-node ./configs/prodServer.js";
+    if (shell.exec(cmd).code !== 0) {
+        shell.echo('prodServer failed!');
+        shell.exit(1);
+    };
+
+    cb();
 });
 
 //// Create a distributable package
 gulp.task('webpack:prod', (cb) => {
-    // Run external tool synchronously
-    // let cmd = "set NODE_ENV=production && webpack --config ./config/webpack.config.prod.babel.js";
-    return prodBuild(cb);
+    let cmd = "babel-node ./configs/prodBuild.js";
+    if (shell.exec(cmd).code !== 0) {
+        shell.echo('prodBuild failed!');
+        shell.exit(1);
+    };
+
+    cb();
 });
