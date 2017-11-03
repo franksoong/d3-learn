@@ -3,6 +3,21 @@ import webpack from 'webpack';
 import config from './webpack.config';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 
+
+// require option for postcss-loader,
+// or will cause No PostCSS Config found error
+// https://www.npmjs.com/package/postcss-loader
+const postCssLoaderOptions = {
+    plugins: (loader) => [
+        require('postcss-import')({ root: loader.resourcePath, }),
+        require('postcss-cssnext')({ warnForDuplicates: false, }),
+        require('autoprefixer')(),
+        require('cssnano')(),
+    ],
+    sourceMap: false,
+};
+
+
 // with stripped devtool, devServer and Hot Module Replacement configurations:
 export default config({
     port: 8080,
@@ -33,5 +48,20 @@ export default config({
             sourceMap: false,
             output: { comments: false },
         }),
-    ]
+    ],
+
+    loaders: [{
+        test: /(\.css|\.scss|\.sass)$/,
+        exclude: /node_modules/,
+        use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+                { loader: 'css-loader' },
+                { loader: 'postcss-loader', options: postCssLoaderOptions },
+                { loader: 'sass-loader' },
+            ],
+        }),
+    }],
+
+
 });

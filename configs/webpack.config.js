@@ -4,7 +4,6 @@ import path from 'path';
 import packageJson from '../package.json';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import cssLoader from './cssLoader.config';
 import {basePath, outPath} from './env.js';
 
 
@@ -19,6 +18,9 @@ var initialize=function (env, port) {
 
 export default ({
     plugins = [],
+
+    loaders = [],
+
     resolve = {},
 
     //default value
@@ -151,8 +153,8 @@ export default ({
                 },
 
                 // Load styles
-                cssLoader(env),
-            ]
+                // config outside
+            ].concat(loaders)
         },
 
         // http://webpack.github.io/docs/webpack-dev-server.html
